@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useState } from "react";
 
 const types = {
   add: "add",
@@ -16,6 +16,14 @@ const reducer = (state, action) => {
     case types.delete:
       return state.filter((todo) => todo.id != action.payload);
 
+    case types.add:
+      return [...state, action.payload];
+
+    case types.update:
+      return state.map((tarea) =>
+        tarea.id === action.payload.id ? action.payload : tarea
+      );
+
     default:
       return state;
   }
@@ -24,12 +32,16 @@ const reducer = (state, action) => {
 const ListTareas = () => {
   const [tareas, dispatch] = useReducer(reducer, initialTareas);
 
-  //   const handleDelete = () => {
-  //       dispatch({
-  //           type: types.delete
-  //           })
-  //   };
+  const [text, setText] = useState("");
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newTarea = { id: Date.now(), title: text };
+    dispatch({
+      type: types.add,
+      payload: newTarea,
+    });
+  };
   return (
     <div>
       <h1>Lista de tareas</h1>
@@ -47,9 +59,27 @@ const ListTareas = () => {
             >
               Delete
             </button>
+            <button
+              onClick={() =>
+                dispatch({
+                  type: types.update,
+                  payload: { ...tarea, title: text },
+                })
+              }
+            >
+              Actualizar
+            </button>
           </li>
         ))}
       </ul>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="texto"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+        />
+      </form>
     </div>
   );
 };
