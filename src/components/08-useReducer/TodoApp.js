@@ -1,24 +1,48 @@
-import React, { useReducer } from "react";
-import { todoReducer } from "../07-tarea-memo/todoReducer";
-import styles from "../08-useReducer/styles.css";
+import React, { useReducer, useEffect } from "react";
+import { todoReducer } from "./todoReducer";
+import { useForm } from "../../hooks/useForm";
+import "./styles.css";
+import TodoList from "./TodoList";
 
-const initialState = [
-  {
-    id: new Date().getTime(),
-    desc: "aprender react",
-    done: false,
-  },
-];
+const init = () => {
+  return JSON.parse(localStorage.getItem("tareas")) || [];
+};
 
 const TodoApp = () => {
-  const [state, dispatch] = useReducer(todoReducer, initialState);
+  const [state, dispatch] = useReducer(todoReducer, [], init);
+
+  const [{ description }, handleInputChange, reset] = useForm({
+    description: "",
+  });
+
+  useEffect(() => {
+    localStorage.setItem("tareas", JSON.stringify(state));
+  }, [state]);
+
+  const handleDelete = (id) => {
+    dispatch({
+      type: "delete",
+      payload: id,
+    });
+  };
+
+  const handleToogle = (tarea) => {
+    dispatch({
+      type: "toogle",
+      payload: tarea,
+    });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    if (description.trim().length <= 1) {
+      return;
+    }
+
     const newTarea = {
       id: new Date().getTime(),
-      desc: "nueva tarea",
+      desc: description,
       done: false,
     };
 
@@ -28,25 +52,21 @@ const TodoApp = () => {
     };
 
     dispatch(action);
+    reset();
   };
 
   return (
     <div>
-      <h1>Todo App {state.length}</h1>
+      <h1>Todo App ({state.length})</h1>
       <hr />
 
       <div className="row">
         <div className="col-7">
-          <ul className="list-group list-group-flush">
-            {state.map((e, i) => (
-              <li className="list-group-item" key={e.id}>
-                <p className="text-center">
-                  {i + 1}. {e.desc}
-                </p>
-                <button className="btn btn-danger">Borrar</button>
-              </li>
-            ))}
-          </ul>
+          <TodoList
+            state={state}
+            handleDelete={handleDelete}
+            handleToogle={handleToogle}
+          />
         </div>
         <div className="col-5">
           <h4>Agregar Tarea</h4>
@@ -59,6 +79,8 @@ const TodoApp = () => {
               name="description"
               placeholder="agregar tarea ..."
               autoComplete="off"
+              value={description}
+              onChange={handleInputChange}
             />
             <button
               className="btn btn-outline-primary mt-1 btn-block"

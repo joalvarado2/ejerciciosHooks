@@ -11,11 +11,11 @@ import ReactDOM from 'react-dom';
 // // import Memorize from "./components/06-memos/Memorize"
 // // import MemoHook from "./components/06-memos/MemoHook"
 // import {Padre} from "./components/07-tarea-memo/Padre"
-// import TodoApp from "./components/08-useReducer/TodoApp";
-import ListTareas from './components/09-listaTareas/ListTareas';
+import TodoApp from "./components/08-useReducer/TodoApp";
+// import ListTareas from './components/09-listaTareas/ListTareas';
 
 
 ReactDOM.render(  
-<ListTareas/>,
+<TodoApp/>,
 document.getElementById('root')
 );
