@@ -1,5 +1,11 @@
 import React from "react";
-import { BrowserRouter as Router, Switch, Route, Link, Redirect } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+} from "react-router-dom";
 import AboutScreen from "./AboutScreen";
 import HomeScreen from "./HomeScreen";
 import LoginScreen from "./LoginScreen";
@@ -9,15 +15,15 @@ const AppRouter = () => {
   return (
     <Router>
       <div>
- 
-      <NavBar/>
-
+        <NavBar />
+        <div className="container">
           <Switch>
-              <Route exact path="/" component={HomeScreen}/>
-              <Route exact path="/about" component={AboutScreen}/>
-              <Route exact path="/login" component={LoginScreen}/>
-              <Redirect to="/"/>
+            <Route exact path="/" component={HomeScreen} />
+            <Route exact path="/about" component={AboutScreen} />
+            <Route exact path="/login" component={LoginScreen} />
+            <Redirect to="/" />
           </Switch>
+        </div>
       </div>
     </Router>
   );
